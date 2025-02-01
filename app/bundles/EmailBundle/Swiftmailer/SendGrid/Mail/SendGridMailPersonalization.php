@@ -16,6 +16,14 @@ class SendGridMailPersonalization
                 $personalization = new Personalization();
                 $to              = new Email($recipientName, $recipientEmail);
                 $personalization->addTo($to);
+        
+                $bccs = $message->getBcc();
+                if ($bccs) {
+                    foreach ($bccs as $bccEmail => $bccName) {
+                        $personalization->addBcc(new Email($bccName, $bccEmail));
+                    }
+                }
+        
                 $mail->addPersonalization($personalization);
             }
 
@@ -39,6 +47,13 @@ class SendGridMailPersonalization
             if (isset($cc)) {
                 $clone = clone $cc;
                 $personalization->addCc($clone);
+            }
+            
+            $bccs = $message->getBcc();
+            if ($bccs) {
+                foreach ($bccs as $bccEmail => $bccName) {
+                    $personalization->addBcc(new Email($bccName, $bccEmail));
+                }
             }
 
             foreach ($metadata[$recipientEmail]['tokens'] as $token => $value) {

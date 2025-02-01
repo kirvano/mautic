@@ -38,12 +38,6 @@ class SendGridMailMetadata
             $replyTo = new ReplyTo(key((array) $message->getReplyTo()));
             $mail->setReplyTo($replyTo);
         }
-        if ($message->getBcc()) {
-            $bcc_settings = new BccSettings();
-            $bcc_settings->setEnable(true);
-            $bcc_settings->setEmail(key($message->getBcc()));
-            $mail_settings->setBccSettings($bcc_settings);
-        }
 
         $mail->setMailSettings($mail_settings);
     }
