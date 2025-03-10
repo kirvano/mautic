@@ -5,7 +5,6 @@ namespace Mautic\ReportBundle\Form\DataTransformer;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 /**
