@@ -36,7 +36,7 @@ class ReportFilterDataTransformer implements DataTransformerInterface
                 return $filters;
             }
             $type = $this->columns[$f['column']]['type'];
-            if (in_array($type, ['datetime', 'time', DateTimeType::class, DateType::class, TimeType::class])) {
+            if (in_array($type, ['datetime', 'time', DateTimeType::class, TimeType::class])) {
                 $dt         = new DateTimeHelper($f['value'], '', 'utc');
                 $f['value'] = $dt->toLocalString();
             }
