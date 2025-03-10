@@ -151,9 +151,12 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      */
     private $sessionId;
 
+    private bool $isCloned = false;
+
     public function __clone()
     {
         $this->id = null;
+        $this->isCloned = true;
         $this->clearTranslations();
         $this->clearVariants();
 
@@ -831,5 +834,15 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     public function setCustomHtml($customHtml): void
     {
         $this->customHtml = $customHtml;
+    }
+
+    public function isCloned(): bool
+    {
+        return $this->isCloned;
+    }
+
+    public function setIsCloned(bool $isCloned): void
+    {
+        $this->isCloned = $isCloned;
     }
 }
