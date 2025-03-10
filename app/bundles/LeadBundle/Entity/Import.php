@@ -348,7 +348,7 @@ class Import extends FormEntity
      */
     public function setOriginalFile($originalFile)
     {
-        $originalFile = strlen($originalFile) > 191 ? substr($originalFile, 0, 187) . '.csv' : $originalFile;
+        $originalFile = strlen($originalFile) > 191 ? substr($originalFile, 0, 187).'.csv' : $originalFile;
         $this->isChanged('originalFile', $originalFile);
         $this->originalFile = $originalFile;
 
