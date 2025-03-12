@@ -34,6 +34,12 @@ class TransportFactory
     public function fromString(string $dsn): TransportInterface
     {
         try {
+            $dsnObject = Dsn::fromString($dsn);
+
+            if("courier" === $dsnObject->getScheme()){
+                return new SqsCourierTransport();
+            }
+
             return $this->transportFactory->fromString($dsn);
         } catch (UnsupportedSchemeException) {
             return new InvalidTransport();
@@ -42,6 +48,10 @@ class TransportFactory
 
     public function fromDsnObject(Dsn $dsn): TransportInterface
     {
+        if ("courier" === $dsn->getScheme()) {
+            return new SqsCourierTransport();
+        }
+        
         return $this->transportFactory->fromDsnObject($dsn);
     }
 }
