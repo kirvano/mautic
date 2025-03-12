@@ -24,12 +24,12 @@ class SqsCourierTransport extends AbstractTransport
       'region'      => 'us-east-1',
       'version'     => 'latest',
       'credentials' => [
-        'key'    => getenv('AWS_SQS_ACCESS_KEY_ID'),
-        'secret' => getenv('AWS_SQS_SECRET_ACCESS_KEY'),
+        'key'    => $_SERVER['AWS_SQS_ACCESS_KEY_ID'],
+        'secret' => $_SERVER['AWS_SQS_SECRET_ACCESS_KEY'],
       ],
     ]);
 
-    $this->queueUrl = getenv('COURIER_QUEUE_NAME');
+    $this->queueUrl = $_SERVER['COURIER_QUEUE_NAME'];
   }
 
   protected function doSend(SentMessage $message): void
