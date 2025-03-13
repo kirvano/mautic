@@ -40,31 +40,44 @@ class SqsCourierTransport extends AbstractTransport
 
     $email = MessageConverter::toEmail($message->getOriginalMessage());
 
-    $toArray = $email->getTo();
-    $to = null;
-    if (!empty($toArray)) {
-      $firstAddress = reset($toArray);
-      $to = $firstAddress->getAddress();
+    $recipients = $email->getTo();
+
+    if (empty($recipients)) {
+      throw new \Exception('Nenhum destinatário encontrado.');
     }
 
     $subject = $email->getSubject();
-
     $text = $email->getTextBody() ?? $email->getHtmlBody() ?? '';
     $utf8Text = mb_convert_encoding($text, 'UTF-8', 'auto');
     $body = base64_encode($utf8Text);
 
-    $data = [
-      'to' => $to,
-      'subject' => $subject,
-      'body' => $body,
-    ];
 
-    $jsonPayload = json_encode($data, JSON_UNESCAPED_UNICODE);
+    $sqsMessages = [];
+
+    foreach ($recipients as $index => $recipient) {
+
+      $data = [
+        'to' => $recipient->getAddress(),
+        'subject' => $subject,
+        'body' => $body,
+      ];
+
+      $jsonPayload = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+      $sqsMessages[] = [
+        'Id'          => (string)$index,
+        'MessageBody' => $jsonPayload,
+      ];
+    }
+
+    if (empty($sqsMessages)) {
+      throw new \Exception('Nenhuma mensagem para enviar.');
+    }
 
     try {
-      $result = $this->sqsClient->sendMessage([
-        'QueueUrl'    => $this->queueUrl,
-        'MessageBody' => $jsonPayload,
+      $this->sqsClient->sendMessageBatch([
+        'QueueUrl' => $this->queueUrl,
+        'Entries'  => $sqsMessages,
       ]);
     } catch (\Exception  $e) {
       throw new \Exception('Erro ao enviar mensagem para SQS: ' . $e->getMessage());
