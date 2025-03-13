@@ -17,6 +17,7 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+!.env.example
 /composer.phar
 /coverage.xml
 /app/bootstrap*
