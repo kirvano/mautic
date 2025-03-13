@@ -68,19 +68,27 @@ class SqsCourierTransport extends AbstractTransport
         'Id'          => (string)$index,
         'MessageBody' => $jsonPayload,
       ];
+
+      if (count($sqsMessages) === 10) {
+        $this->sendBatch($sqsMessages);
+        $sqsMessages = [];
+      }
     }
 
-    if (empty($sqsMessages)) {
-      throw new \Exception('Nenhuma mensagem para enviar.');
+    if (!empty($sqsMessages)) {
+      $this->sendBatch($sqsMessages);
     }
+  }
 
+  private function sendBatch(array $messages): void
+  {
     try {
       $this->sqsClient->sendMessageBatch([
         'QueueUrl' => $this->queueUrl,
-        'Entries'  => $sqsMessages,
+        'Entries'  => $messages,
       ]);
     } catch (\Exception  $e) {
-      throw new \Exception('Erro ao enviar mensagem para SQS: ' . $e->getMessage());
+      throw new \Exception('Erro ao enviar mensagens para SQS: ' . $e->getMessage());
     }
   }
 
